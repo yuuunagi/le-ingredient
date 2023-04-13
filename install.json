@@ -1,0 +1,35 @@
+{
+  "version": "v0.1.0",
+  "notes": "Initialization",
+  "pub_date": "2023-04-13T09:38:26.230Z",
+  "platforms": {
+    "win64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVROUZNVjhZWG5SVzlOVHltcWZWZFpaOWZQbUkyTmdWbW9HNUVMajhJczl1ZDZJN1BiMXFIVkNxM0NSMGFlVDFwaTZkbXNWZGJRNDdaTG14ekd0aW00R2UzWFI3MHRHZXdRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNjgxMzc4MDM1CWZpbGU6bGUtaW5ncmVkaWVudF8wLjEuMF94NjRfZW4tVVMubXNpLnppcApRTWpTSVpKY2kvOGF3c0NPaG1aODRFb05IMFZ5bTVQcjA4by81bkZmZ0hHRXdWL3MrREljenU4dkZwYllNNmp6S2pvT0luUWZQR2tjOWhWL040bzBDQT09Cg==",
+      "url": "https://github.com/yuuunagi/le-ingredient/releases/download/v0.1.0/le-ingredient_0.1.0_windows_x86_64.msi.zip"
+    },
+    "linux": {
+      "signature": "",
+      "url": ""
+    },
+    "darwin": {
+      "signature": "",
+      "url": ""
+    },
+    "darwin-aarch64": {
+      "signature": "",
+      "url": ""
+    },
+    "darwin-x86_64": {
+      "signature": "",
+      "url": ""
+    },
+    "linux-x86_64": {
+      "signature": "",
+      "url": ""
+    },
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVROUZNVjhZWG5SVzlOVHltcWZWZFpaOWZQbUkyTmdWbW9HNUVMajhJczl1ZDZJN1BiMXFIVkNxM0NSMGFlVDFwaTZkbXNWZGJRNDdaTG14ekd0aW00R2UzWFI3MHRHZXdRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNjgxMzc4MDM1CWZpbGU6bGUtaW5ncmVkaWVudF8wLjEuMF94NjRfZW4tVVMubXNpLnppcApRTWpTSVpKY2kvOGF3c0NPaG1aODRFb05IMFZ5bTVQcjA4by81bkZmZ0hHRXdWL3MrREljenU4dkZwYllNNmp6S2pvT0luUWZQR2tjOWhWL040bzBDQT09Cg==",
+      "url": "https://github.com/yuuunagi/le-ingredient/releases/download/v0.1.0/le-ingredient_0.1.0_windows_x86_64.msi.zip"
+    }
+  }
+}
