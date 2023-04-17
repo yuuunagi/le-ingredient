@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "le-ingredient",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "tauri": {
     "allowlist": {
@@ -35,7 +35,10 @@
     },
     "updater": {
       "active": true,
-      "dialog": false,
+      "dialog": true,
+      "windows": {
+        "installMode": "basicUi"
+      },
       "endpoints": [
         "https://yuuunagi.github.io/le-ingredient/install.json"
       ],

@@ -1,0 +1,185 @@
+diff --git a/dist/updater.mjs b/dist/updater.mjs
+index 883f7fa617a61c5f88a614ad17cd760add229fcf..6c4b1a51e8d57ad71d41e62b466ad4a6cbd400a0 100644
+--- a/dist/updater.mjs
++++ b/dist/updater.mjs
+@@ -1,8 +1,14 @@
+ import fs from 'fs';
+ import path from 'path';
+ import fetch from 'node-fetch';
+-import { context, getOctokit } from '@actions/github';
+-import { $ as $argv, a as $, R as ROOT_PATH, r as relativePath, d as UPDATER_JSON_PATH } from './shared/cli.8f57657e.mjs';
++import {context, getOctokit} from '@actions/github';
++import {
++  $ as $argv,
++  a as $,
++  R as ROOT_PATH,
++  r as relativePath,
++  d as UPDATER_JSON_PATH,
++} from './shared/cli.8f57657e.mjs';
+ import updatelog from './updatelog.mjs';
+ import 'module';
+ 
+@@ -21,51 +27,57 @@ async function updater() {
+     }
+   }
+   if (!owner || !owner || !argv.token) {
+-    console.log($.red("[\u{1F4A2} updater]"), "`owner`, `repo`, `token` are required.");
++    console.log(
++      $.red('[\u{1F4A2} updater]'),
++      '`owner`, `repo`, `token` are required.'
++    );
+     process.exit(0);
+   }
+   let filename = UPDATER_JSON_PATH;
+   if (argv.output) {
+     filename = path.join(ROOT_PATH, argv.output);
+     if (!/.json$/.test(filename)) {
+-      console.log($.red("[\u{1F4A2} updater]"), $.yellow(filename), `The output file format must be json`);
++      console.log(
++        $.red('[\u{1F4A2} updater]'),
++        $.yellow(filename),
++        `The output file format must be json`
++      );
+       process.exit(0);
+     }
+   }
+   if (!fs.existsSync(path.dirname(filename))) {
+-    fs.mkdirSync(path.dirname(filename), { recursive: true });
++    fs.mkdirSync(path.dirname(filename), {recursive: true});
+   }
+-  const options = { owner, repo };
++  const options = {owner, repo};
+   const github = getOctokit(argv.token);
+-  const { data: tags } = await github.rest.repos.listTags({
++  const {data: tags} = await github.rest.repos.listTags({
+     ...options,
+     per_page: 10,
+-    page: 1
++    page: 1,
+   });
+-  const tag = tags.find((t) => t.name.startsWith("v"));
+-  if (!tag)
+-    return;
+-  const { data: latestRelease } = await github.rest.repos.getReleaseByTag({
++  const tag = tags.find((t) => t.name.startsWith('v'));
++  if (!tag) return;
++  const {data: latestRelease} = await github.rest.repos.getReleaseByTag({
+     ...options,
+-    tag: tag.name
++    tag: tag.name,
+   });
+-  const { content } = updatelog(tag.name);
++  const {content} = updatelog(tag.name);
+   const updateData = {
+     version: tag.name,
+     notes: content,
+     pub_date: new Date().toISOString(),
+     platforms: {
+-      win64: { signature: "", url: "" },
+-      linux: { signature: "", url: "" },
+-      darwin: { signature: "", url: "" },
+-      "darwin-aarch64": { signature: "", url: "" },
+-      "darwin-x86_64": { signature: "", url: "" },
+-      "linux-x86_64": { signature: "", url: "" },
+-      "windows-x86_64": { signature: "", url: "" }
+-    }
++      win64: {signature: '', url: ''},
++      // linux: { signature: "", url: "" },
++      // darwin: { signature: "", url: "" },
++      // "darwin-aarch64": { signature: "", url: "" },
++      // "darwin-x86_64": { signature: "", url: "" },
++      // "linux-x86_64": { signature: "", url: "" },
++      'windows-x86_64': {signature: '', url: ''},
++    },
+   };
+   const setAsset = async (asset, reg, platforms) => {
+-    let sig = "";
++    let sig = '';
+     if (/.sig$/.test(asset.name)) {
+       sig = await getSignature(asset.browser_download_url);
+     }
+@@ -73,10 +85,11 @@ async function updater() {
+       if (/aarch64/.test(asset.name)) {
+         if (/.app.tar.gz/.test(asset.name)) {
+           if (sig) {
+-            updateData.platforms["darwin-aarch64"].signature = sig;
++            updateData.platforms['darwin-aarch64'].signature = sig;
+             return;
+           }
+-          updateData.platforms["darwin-aarch64"].url = asset.browser_download_url;
++          updateData.platforms['darwin-aarch64'].url =
++            asset.browser_download_url;
+           return;
+         }
+       } else if (reg.test(asset.name)) {
+@@ -89,34 +102,54 @@ async function updater() {
+     });
+   };
+   const promises = latestRelease.assets.map(async (asset) => {
+-    await setAsset(asset, /.msi.zip/, ["win64", "windows-x86_64"]);
++    await setAsset(asset, /.msi.zip/, ['win64', 'windows-x86_64']);
+     await setAsset(asset, /.app.tar.gz/, [
+-      "darwin",
+-      "darwin-x86_64",
+-      "darwin-aarch64"
++      'darwin',
++      'darwin-x86_64',
++      'darwin-aarch64',
+     ]);
+-    await setAsset(asset, /.AppImage.tar.gz/, ["linux", "linux-x86_64"]);
++    await setAsset(asset, /.AppImage.tar.gz/, ['linux', 'linux-x86_64']);
+   });
+   await Promise.allSettled(promises);
+   fs.writeFileSync(filename, JSON.stringify(updateData, null, 2));
+-  console.log($.green("[\u2728 updater]"), $.green(relativePath(filename)), "\n");
+-  console.log($.yellow("*".repeat(20)));
+-  console.log($.yellow("*"), $.blue("Edit `.github/workflows/release.yml > peaceiris/actions-gh-pages > publish_dir"));
+-  console.log($.yellow("*"), $.gray("value:"), $.green(relativePath(path.dirname(filename))));
+-  console.log($.yellow("*"), $.blue("Edit `tauri.conf.json > tauri > updater > endpoints`"));
+-  console.log($.yellow("*"), $.gray("value:"), $.green(`https://${owner}.github.io/${repo}/${path.basename(filename)}`));
+-  console.log($.yellow("*".repeat(20)));
++  console.log(
++    $.green('[\u2728 updater]'),
++    $.green(relativePath(filename)),
++    '\n'
++  );
++  console.log($.yellow('*'.repeat(20)));
++  console.log(
++    $.yellow('*'),
++    $.blue(
++      'Edit `.github/workflows/release.yml > peaceiris/actions-gh-pages > publish_dir'
++    )
++  );
++  console.log(
++    $.yellow('*'),
++    $.gray('value:'),
++    $.green(relativePath(path.dirname(filename)))
++  );
++  console.log(
++    $.yellow('*'),
++    $.blue('Edit `tauri.conf.json > tauri > updater > endpoints`')
++  );
++  console.log(
++    $.yellow('*'),
++    $.gray('value:'),
++    $.green(`https://${owner}.github.io/${repo}/${path.basename(filename)}`)
++  );
++  console.log($.yellow('*'.repeat(20)));
+ }
+ async function getSignature(url) {
+   try {
+     const response = await fetch(url, {
+-      method: "GET",
+-      headers: { "Content-Type": "application/octet-stream" }
++      method: 'GET',
++      headers: {'Content-Type': 'application/octet-stream'},
+     });
+     return response.text();
+   } catch (_) {
+-    return "";
++    return '';
+   }
+ }
+ 
+-export { updater as default };
++export {updater as default};

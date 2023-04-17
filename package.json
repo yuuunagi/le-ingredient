@@ -39,5 +39,10 @@
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^3.0.0",
     "vite": "^4.2.1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@tauri-release/cli@0.2.5": "patches/@tauri-release__cli@0.2.5.patch"
+    }
   }
 }
