@@ -8,7 +8,7 @@ export default () => {
       <Routes>
         {/* <Route path="/" element={<Layout />}> */}
         <Route index element={<Test />} />
-        <Route path="test" element={<Home />} />
+        {/* <Route path="test" element={<Home />} /> */}
         {/* </Route> */}
       </Routes>
     </BrowserRouter>

@@ -1,20 +1,48 @@
 import {useState} from 'react';
 import {Droppable, Draggable, DragDropContext} from '@hello-pangea/dnd';
-import {Row, Col, Card, notification, Space} from 'antd';
+import {Row, Col, Card, notification, Space, Button} from 'antd';
 import Metage, {precisionMap} from './components/metage';
 import MetageModal from './components/metageModal';
-
+import { invoke } from '@tauri-apps/api/tauri'
+import { useEffect } from 'react';
+function str2ArrayBuffer(bytes, len) {
+  var buf = new ArrayBuffer(len);
+  var bufView = new Uint8Array(buf);
+  for (var i = 0; i < bytes.length; i++) {
+    bufView[i] = bytes[i];
+  }
+  return buf;
+}
+// 将4个字节型字符串转为Float
+function convertFloat(bytes) {
+  var buffer = str2ArrayBuffer(bytes, 4);
+  var dataView = new DataView(buffer, 0, 4);
+  return dataView.getFloat32(0).toFixed(3);
+} 
+// IEEE754
+function float2hex(numStr = '0') {
+  let buf = new ArrayBuffer(4); // 创建一个4字节的二进制数据缓冲区
+  let view = new DataView(buf); // 创建一个数据视图
+  view.setFloat32(0, parseFloat(numStr), false); // 在偏移量为0的位置写入0.01，使用大端字节序
+  let hex = [...new Uint8Array(buf)] // 创建一个8位无符号整数数组，并将其展开为一个普通数组
+  .map(b => b.toString(16).padStart(2, '0')) // 将每个字节转换为16进制字符串，并用0补齐两位
+  .join(''); // 将所有的16进制字符串拼接成一个完整的字符串
+  console.log(hex)
+  return hex;
+}
+const deviation = float2hex('0.01')
+let t = null
 export default () => {
   const [tasks, setTasks] = useState([1, 2, 3, 4]);
   const [metages, setMetages] = useState([
-    {name: 'LECZ0000001', value: '0.00', max: 10000, precision: 1},
-    {name: 'LECZ0000002', value: '0.00', max: 100, precision: 1},
-    {name: 'LECZ0000003', value: '0.00', max: 100, precision: 1},
-    {name: 'LECZ0000004', value: '0.00', max: 100, precision: 1},
-    {name: 'LECZ0000005', value: '0.00', max: 5000, precision: 2},
-    {name: 'LECZ0000006', value: '0.00', max: 50, precision: 2},
-    {name: 'LECZ0000007', value: '0.00', max: 50, precision: 2},
-    {name: 'LECZ0000008', value: '0.00', max: 50, precision: 2},
+    {name: 'LECZ0000001', value: '0.000', max: 10000, precision: 1},
+    {name: 'LECZ0000002', value: '0.000', max: 100, precision: 1},
+    {name: 'LECZ0000003', value: '0.000', max: 100, precision: 1},
+    {name: 'LECZ0000004', value: '0.000', max: 100, precision: 1},
+    {name: 'LECZ0000005', value: '0.000', max: 5000, precision: 2},
+    {name: 'LECZ0000006', value: '0.000', max: 50, precision: 2},
+    {name: 'LECZ0000007', value: '0.000', max: 50, precision: 2},
+    {name: 'LECZ0000008', value: '0.000', max: 50, precision: 2},
   ]);
   const [taskDetails, setTaskDetails] = useState([
     [
@@ -45,6 +73,31 @@ export default () => {
   const [metageModalOpen, setMetageModalOpen] = useState(false);
   const [currentTaskDetail, setCurrentTaskDetail] = useState(-1);
   const [currentMetage, setCurrentMetage] = useState(-1);
+  useEffect(()=>{
+    invoke('socket_connect', { addr: '192.168.0.1:2000' }).then(res=>{
+      if('Connected successfully' == res || 'Already connected' == res){
+        clearInterval(t)
+        t = setInterval(() => {
+          invoke('socket_read').then(res=>{
+            if(!res) return 
+            const v1 = convertFloat(res.slice(0, 4));
+            const v2 = convertFloat(res.slice(6, 10));
+            if(metages[0].value != v1 || metages[1].value != v2 ){
+              metages[0].value = v1
+              metages[1].value = v2
+              setMetages([...metages])
+            }
+          }).catch(err=>{
+            notification.error({message: err.toString()})
+          })
+        }, 1000);
+      } else {
+        notification.error({message: res})
+      }
+    }).catch(err=>{
+      notification.error({message: err.toString()})
+    })
+  }, [])
   const onDragEnd = (result) => {
     const {source, destination} = result;
     console.log(source, destination);
@@ -121,6 +174,17 @@ export default () => {
                   </Droppable>
                 ))}
               </Row>
+              <Button onClick={
+                ()=>{
+                  invoke('socket_close')
+                }
+              }>断开</Button>
+              <Button onClick={
+                ()=>{
+                  invoke('socket_write',
+                  {message: `0000${float2hex(metages[0].target)}${deviation}0100${float2hex(metages[1].target)}${deviation}0100`})
+                }
+              }>开始任务</Button>
             </Space>
           </Col>
           <Col span={6}>
