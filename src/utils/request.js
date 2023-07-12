@@ -2,7 +2,9 @@
 import {extend} from 'umi-request';
 import {notification} from 'antd';
 const baseURL =
-  'development' === process.env.NODE_ENV ? 'http://localhost:9000' : '';
+  'development' === process.env.NODE_ENV
+    ? 'http://localhost:9000'
+    : 'https://test.lestone.com:18080';
 localStorage.setItem(
   'token',
   'eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2ODM1NDA1NDksImF1ZGllbmNlIjoibW9iaWxlIiwiY3JlYXRlZCI6MTY4MzUzMzM0OTA0MSwiaXNGb3JnZXRQd2QiOmZhbHNlLCJ1bmlxdWUiOiJmMWFkMzc5YWFiYmY0ZGRlOTk0YmUyMjA5ZDI2MzY0NSIsInN1YiI6Ik9BIiwic3ViQ25hbWUiOiJPQSJ9.d8XYilRqqVgWDzPPSZrtMES0brzoGbvJZZ21h-wyDk4AJ1pg9T4VgXS--906m8rVRTOLQ3-i7wVJ4bnvjZiEyQ'
