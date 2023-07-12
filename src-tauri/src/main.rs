@@ -21,6 +21,7 @@ fn socket_connect(state: State<AppState>, addr: &str) -> Result<String, String> 
     } else {
         // 如果没有连接，尝试连接到指定的地址
         let stream = TcpStream::connect(addr).map_err(|e| e.to_string())?;
+        stream.set_nonblocking(true).map_err(|e| e.to_string())?;
         // 把新的连接放入state中
         *socket = Some(stream);
         // 返回连接结果

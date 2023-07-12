@@ -5,3 +5,36 @@
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafb);
 }
+
+@font-face {
+  font-family: 'UnidreamLED';
+  src:url(assets/fonts/UnidreamLED.eot); /***兼容ie9***/
+  src:url(assets/fonts/UnidreamLED.eot?#iefix)format('embedded-opentype'), /***兼容ie6-ie8***/
+  url('assets/fonts/UnidreamLED.woff') format('woff'), 
+  local('UnidreamLED'), url("assets/fonts/UnidreamLED.woff");/***默认使用本地的***/
+}
+
+.led {
+  font-family: 'UnidreamLED';
+  font-size: 30px;
+  margin-bottom: 10px!important;
+}
+.ant-btn-text {
+	color: rgba(0,0,0,0.85);
+	border-color: transparent;
+	background: transparent;
+	box-shadow: none;
+}
+.mask-div{
+    position: absolute;
+    top: 0;
+    inset-inline-end: 0;
+    bottom: 0;
+    inset-inline-start: 0;
+    z-index: 100;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+.f1 .ant-form-item{
+  margin-bottom: 2px;
+}

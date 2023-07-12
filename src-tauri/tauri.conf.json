@@ -8,14 +8,36 @@
   },
   "package": {
     "productName": "le-ingredient",
-    "version": "0.1.1"
+    "version": "0.1.2"
   },
   "tauri": {
     "allowlist": {
       "all": false,
+      "fs": {
+        "all": true,
+        "scope": [
+          "$RESOURCE/**",
+          "\\\\localhost\\**"
+        ]
+      },
+      "http": {
+        "all": true,
+        "request": true,
+        "scope": ["https://*.le.com/*","http://localhost:9000/*"]
+      },
       "shell": {
-        "all": false,
-        "open": true
+        "all": true,
+        "scope": [
+          {
+            "name": "cmd",
+            "cmd": "cmd",
+            "args": true 
+          }
+        ]
+        
+      },
+      "path": {
+        "all": true
       }
     },
     "bundle": {
@@ -26,6 +48,9 @@
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
+      ],
+      "resources": [
+        "configs/*"
       ],
       "identifier": "com.le.dev",
       "targets": "all"

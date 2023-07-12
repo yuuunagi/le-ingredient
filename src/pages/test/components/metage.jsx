@@ -1,36 +1,58 @@
 import React, {useState, forwardRef} from 'react';
 import Icon from '@ant-design/icons';
-import {Card} from 'antd';
+import {Button, Card, Typography} from 'antd';
 import {ReactComponent as MetageSvg} from '@/assets/metage.svg';
+import {EllipsisOutlined, DeleteOutlined} from '@ant-design/icons';
+import {find} from 'lodash';
 const precisionMap = {
   1: 'kg',
   2: 'g',
 };
+const {Paragraph} = Typography;
 const Metage = (props, ref) => {
-  const {name, value, target, task, isDraggingOver, max, precision} = props;
+  const {data, setOpen, options, reset, isDraggingOver} = props;
+  const {name, value, target, task, isEnable, precision, type} = data;
+  const rule = find(options, {value: type});
   return (
-    <Card
-      style={{
-        textAlign: 'center',
-        border: isDraggingOver ? 'medium dashed' : '',
-      }}
-    >
-      <Icon component={MetageSvg} key="riskgroup" style={{fontSize: '32px'}} />
-      <p>{name}</p>
-      <p>
-        读数：{value}
-        {precisionMap[precision]}
-      </p>
-      <p>
-        最大量程：{max.toFixed(2)}
-        {precisionMap[precision]}
-      </p>
-      <p>当前任务: {task}</p>
-      <p>
-        目标重量：
-        {target ? `${target.toFixed(2)}${precisionMap[precision]}` : null}
-      </p>
-    </Card>
+    <div>
+      {!isEnable && <Card className="mask-div" />}
+      <Card
+        style={{
+          textAlign: 'center',
+          border: isDraggingOver ? 'medium dashed' : '',
+        }}
+      >
+        <Icon
+          component={MetageSvg}
+          key="riskgroup"
+          style={{fontSize: '32px'}}
+        />
+        <Paragraph>{name}</Paragraph>
+        <Paragraph className="led">
+          {value}
+          {precisionMap[precision]}
+        </Paragraph>
+        <Paragraph>
+          最大量程：{rule?.max}
+          {precisionMap[precision]}
+        </Paragraph>
+        <Paragraph>当前任务: {task}</Paragraph>
+        <Paragraph>
+          目标重量：
+          {target ? `${target}${precisionMap[precision]}` : null}
+        </Paragraph>
+        <div style={{position: 'absolute', right: 0, top: 0, zIndex: 101}}>
+          <Button type="text" onClick={reset} icon={<DeleteOutlined />} />
+          <Button
+            type="text"
+            onClick={() => {
+              setOpen(true);
+            }}
+            icon={<EllipsisOutlined />}
+          />
+        </div>
+      </Card>
+    </div>
   );
 };
 export default forwardRef(Metage);
